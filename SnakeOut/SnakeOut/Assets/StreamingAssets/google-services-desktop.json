@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "758620641223",
+    "project_id": "arrow-out-puzzle-game",
+    "storage_bucket": "arrow-out-puzzle-game.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758620641223:android:ead85519a20e7178e36be2",
+        "android_client_info": {
+          "package_name": "com.NextGame.ArrowOutPuzzleGame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCezIvv1G6lADQODlPsKgG4HLjpaueeGJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

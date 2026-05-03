@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 575f5d3943bd01b4db292a486512b161
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 322815
+  packageName: Block Jam | Template + Editor
+  packageVersion: 1.0.0
+  assetPath: Assets/Project Files/Game/Scripts/Tutorial/TutorialBaseSave.cs
+  uploadId: 819880

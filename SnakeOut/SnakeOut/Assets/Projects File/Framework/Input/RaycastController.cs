@@ -1,0 +1,120 @@
+using Base.UI.Manager;
+using Framework;
+using Framework.Core;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using ArrowOut;
+
+namespace Watermelon
+{
+	[StaticUnload]
+	public class RaycastController : MonoBehaviour
+	{
+		private static bool isActive;
+
+		// Position where the pointer was first pressed this interaction
+		private static Vector2 pressStartPosition;
+		// Max pixels the pointer can move and still count as a tap (not a drag)
+		private const float DRAG_THRESHOLD_PX = 10f;
+
+		public static event SimpleCallback OnInputActivated;
+		public static event SimpleCallback OnObjectTouched;
+
+		public void Init()
+		{
+			isActive = true;
+		}
+
+		private void Update()
+		{
+			if (!isActive || UIController.IsPopupOpened) return;
+			Debug.Log("1");
+
+			//// Suppress clicks while a zoom or pan gesture is in progress
+			//if (ArrowOut.CameraController.IsZooming || ArrowOut.CameraController.IsPanning) return;
+			//Debug.Log("2");
+
+			if (UIPanelManager.Instance.IsPanelOpened)
+				return;
+			Debug.Log("3");
+
+			if (InputController.ClickAction.WasPressedThisFrame())
+			{
+				Debug.Log("4");
+
+				// Return if clicking on any UI element
+				if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+					return;
+
+				// Record where the press started so we can detect drags on release
+				pressStartPosition = InputController.MousePosition;
+
+				Ray ray = Camera.main.ScreenPointToRay(InputController.MousePosition);
+				RaycastHit hit;
+
+				if (Physics.Raycast(ray, out hit))
+				{
+					Debug.Log("6");
+
+					IClickableObject clickableObject = hit.transform.GetComponent<IClickableObject>();
+					if (clickableObject != null)
+					{
+						Debug.Log("7");
+
+						OnObjectTouched?.Invoke();
+
+						PUBehavior selectedPU = PUController.SelectedPU;
+						if (selectedPU != null)
+						{
+							PUController.ApplyToElement(clickableObject, hit.point);
+						}
+						else
+						{
+							PUController.DisablePowerUp(PUType.PreviewLine);
+							if (clickableObject.CanBeClicked())
+							{
+								Debug.Log("7");
+
+								clickableObject.OnObjectClicked();
+							}
+							else
+							{
+								clickableObject.OnClickBlocked();
+							}
+						}
+					}
+				}
+			}
+			else if (InputController.ClickAction.WasReleasedThisFrame() && LevelController._currentSelectedArrow != null)
+			{
+				// Only fire OnObjectReleased if the pointer hasn't moved significantly
+				// since the press — i.e. this is a tap, not a pan/drag gesture.
+				float dragDistance = Vector2.Distance(InputController.MousePosition, pressStartPosition);
+				if (dragDistance <= DRAG_THRESHOLD_PX)
+				{
+					LevelController.OnObjectReleased();
+				}
+			}
+		}
+
+		public static void Disable()
+		{
+			isActive = false;
+		}
+
+		public static void Enable()
+		{
+			isActive = true;
+
+			OnInputActivated?.Invoke();
+		}
+
+		private static void UnloadStatic()
+		{
+			isActive = false;
+
+			OnInputActivated = null;
+			OnObjectTouched = null;
+		}
+	}
+}
