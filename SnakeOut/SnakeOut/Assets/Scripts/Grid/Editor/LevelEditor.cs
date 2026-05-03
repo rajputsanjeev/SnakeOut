@@ -80,10 +80,12 @@ public class LevelEditor : EditorWindow
 	{
 		wantsMouseMove = true; // Enable mouse move events for better drawing
 		LoadDatabase();
+		LoadPalettePrefs();
 	}
 
 	void OnDisable()
 	{
+		SavePalettePrefs();
 		foreach (var tex in texCache.Values)
 		{
 			if (tex != null) DestroyImmediate(tex);
@@ -390,6 +392,8 @@ public class LevelEditor : EditorWindow
 	void SaveCurrentLevel()
 	{
 		if (selectedLevel == null) return;
+
+		Undo.RecordObject(selectedLevel, "Save Level Editor Changes");
 
 		selectedLevel.width = width;
 		selectedLevel.height = height;
@@ -906,7 +910,7 @@ public class LevelEditor : EditorWindow
 
 			EditorGUI.BeginChangeCheck();
 			Color newColor = EditorGUILayout.ColorField("Arrow Color", selectedArrow.color);
-			Material newTexture = (Material)EditorGUILayout.ObjectField("Arrow Texture", selectedArrow.texture, typeof(Texture2D), false);
+			Material newTexture = (Material)EditorGUILayout.ObjectField("Arrow Texture", selectedArrow.texture, typeof(Material), false);
 
 			if (EditorGUI.EndChangeCheck())
 			{
@@ -1214,6 +1218,54 @@ public class LevelEditor : EditorWindow
 		texCache[col] = result;
 		return result;
 	}
+
+	// ================= PALETTE PREFS =================
+	private void SavePalettePrefs()
+	{
+		var wrapper = new PaletteWrapper();
+		wrapper.items = new List<PaletteItemData>();
+		foreach(var item in colorPalette)
+		{
+			string guid = "";
+			if (item.texture != null)
+			{
+				string path = AssetDatabase.GetAssetPath(item.texture);
+				if (!string.IsNullOrEmpty(path))
+					guid = AssetDatabase.AssetPathToGUID(path);
+			}
+			wrapper.items.Add(new PaletteItemData { color = item.color, textureGUID = guid });
+		}
+		EditorPrefs.SetString("LevelEditor_ColorPalette", JsonUtility.ToJson(wrapper));
+	}
+
+	private void LoadPalettePrefs()
+	{
+		string json = EditorPrefs.GetString("LevelEditor_ColorPalette", "");
+		if (!string.IsNullOrEmpty(json))
+		{
+			var wrapper = JsonUtility.FromJson<PaletteWrapper>(json);
+			if (wrapper != null && wrapper.items != null && wrapper.items.Count > 0)
+			{
+				colorPalette.Clear();
+				foreach(var item in wrapper.items)
+				{
+					Material mat = null;
+					if (!string.IsNullOrEmpty(item.textureGUID))
+					{
+						string path = AssetDatabase.GUIDToAssetPath(item.textureGUID);
+						if (!string.IsNullOrEmpty(path))
+							mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+					}
+					colorPalette.Add(new ArrowPaletteItem(item.color) { texture = mat });
+				}
+			}
+		}
+	}
+
+	[Serializable]
+	private class PaletteWrapper { public List<PaletteItemData> items; }
+	[Serializable]
+	private class PaletteItemData { public Color color; public string textureGUID; }
 }
 
 
