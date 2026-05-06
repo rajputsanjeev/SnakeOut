@@ -159,6 +159,8 @@ namespace ArrowOut
 				});
 				AudioController.PlaySound(AudioController.AudioClips.actionError, 0.5f);
 				StartCoroutine(ExtendAndBounceArrow());
+				isExtending = false;
+				LevelController.OnArrowRemoved();
 			}
 			else
 			{

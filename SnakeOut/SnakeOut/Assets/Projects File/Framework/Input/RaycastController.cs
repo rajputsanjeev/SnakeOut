@@ -28,20 +28,15 @@ namespace Watermelon
 		private void Update()
 		{
 			if (!isActive || UIController.IsPopupOpened) return;
-			Debug.Log("1");
 
 			//// Suppress clicks while a zoom or pan gesture is in progress
 			//if (ArrowOut.CameraController.IsZooming || ArrowOut.CameraController.IsPanning) return;
-			//Debug.Log("2");
 
 			if (UIPanelManager.Instance.IsPanelOpened)
 				return;
-			Debug.Log("3");
 
 			if (InputController.ClickAction.WasPressedThisFrame())
 			{
-				Debug.Log("4");
-
 				// Return if clicking on any UI element
 				if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
 					return;

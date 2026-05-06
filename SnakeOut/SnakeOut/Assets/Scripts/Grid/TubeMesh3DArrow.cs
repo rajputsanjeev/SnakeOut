@@ -9,7 +9,7 @@ namespace ArrowOut
 	// <summary>
 	/// 3D Tube mesh arrow body — mesh generation delegated to Dreamteck TubeGenerator + SplineComputer
 	/// </summary>
-	public class TubeMesh3DArrow : MonoBehaviour, IArrowRenderer, IClickableObject
+	public class TubeMesh3DArrow : MonoBehaviour, IArrowRenderer, IClickableObjectRenderer
 	{
 		// Dreamteck Splines components
 		private SplineComputer splineComputer;
@@ -65,6 +65,8 @@ namespace ArrowOut
 
 			// MeshCollider for OnMouseDown click detection
 			meshCollider = gameObject.AddComponent<MeshCollider>();
+			var colliderClick = gameObject.AddComponent<ColliderClickForwarder>();
+			colliderClick.Initialize(this);
 
 			UpdatePath(path);
 			CreatePreviewLine();

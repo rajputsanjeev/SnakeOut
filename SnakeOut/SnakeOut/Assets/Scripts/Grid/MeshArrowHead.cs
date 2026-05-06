@@ -36,7 +36,6 @@ namespace ArrowOut
 						head.GeckoMeshRender[i].material = arrowComp.Data.texture;
 					}
 				}
-
 			}
 			else
 			{

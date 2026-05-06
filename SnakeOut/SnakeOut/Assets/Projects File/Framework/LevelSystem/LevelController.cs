@@ -172,6 +172,7 @@ namespace Framework
 		public static void SubstractMove()
 		{
 			GameplayMove?.Substract(1);
+			_currentSelectedArrow = null;
 		}
 
 		private void SettingBackButtonPressed()
@@ -225,7 +226,6 @@ namespace Framework
 		public static void OnObjectReleased()
 		{
 			_currentSelectedArrow?.MouseUp();
-			_currentSelectedArrow = null;
 		}
 
 		public static void InvokeOrWait(SimpleCallback loadCallback)

@@ -1,0 +1,4 @@
+[submodule "SnakeOut/SnakeOut/Assets/Framework"]
+	path = SnakeOut/SnakeOut/Assets/Framework
+	url = https://github.com/rajputsanjeev/Framework.git
+	branch = main
