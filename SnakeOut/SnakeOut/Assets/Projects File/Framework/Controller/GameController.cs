@@ -433,8 +433,6 @@ namespace Framework
 					DG.Tweening.DOTween.KillAll();
 
 					TransitionManager.Instance.LoadLevel(GameConsts.SCENE_MENU);
-
-					//SceneLoader.LoadAsync(GameConsts.SCENE_MENU, LOADINGSCREENUI, LOADINGSCREENUI._loadingScreenConfig);
 				});
 			}, true);
 		}
@@ -448,8 +446,6 @@ namespace Framework
 					DG.Tweening.DOTween.KillAll();
 
 					TransitionManager.Instance.LoadLevel(GameConsts.SCENE_GAME);
-
-					//SceneLoader.LoadAsync(GameConsts.SCENE_GAME, LOADINGSCREENUI, LOADINGSCREENUI._loadingScreenConfig);
 				});
 			}, true);
 		}
@@ -462,10 +458,24 @@ namespace Framework
 				Unload(() =>
 				{
 					TransitionManager.Instance.LoadLevel(GameConsts.SCENE_MENU);
-
-					//SceneLoader.LoadAsync(GameConsts.SCENE_MENU, LOADINGSCREENUI, LOADINGSCREENUI._loadingScreenConfig);
 				});
 			}, true);
+		}
+
+		public static void LoadMenu()
+		{
+			// Show fullscreen black overlay
+			Overlay.Show(0.3f, () =>
+			{
+				//Cut one Life
+				LivesSystem.UnlockLife(true);
+
+				// Save the current state of the game
+				SaveController.Save(true);
+
+				// Unload the current level and all the dependencies
+				LoadMainScene();
+			});
 		}
 	}
 }

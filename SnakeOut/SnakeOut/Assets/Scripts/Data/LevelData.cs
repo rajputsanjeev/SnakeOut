@@ -6,6 +6,7 @@ public class LevelData : ScriptableObject
 {
 	public int width;
 	public int height;
+	public float spacing = 1f;
 	public Vector2Int Size => new Vector2Int(width, height);
 	public float Duration;
 	public int levelNumber;

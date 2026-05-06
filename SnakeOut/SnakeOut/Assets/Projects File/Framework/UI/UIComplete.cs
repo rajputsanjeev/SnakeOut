@@ -64,7 +64,7 @@ namespace Framework
 		{
 			base.PlayShowAnimation();
 
-			LevelText.text = "Level " + GetCurrentLevelAbstract.Instance.GetLevel().ToString();
+			LevelText.text = "Level " + (GetCurrentLevelAbstract.Instance.GetLevel() - 1).ToString();
 
 			extraRewardCanvasGroup.alpha = 0;
 			LuckyWheel.gameObject.SetActive(false);
@@ -179,7 +179,7 @@ namespace Framework
 			extraRewardButton.interactable = false;
 
 			MyEventArgs.GameControllerEvents.OnLevelComplete?.Dispatch(currentReward.Amount * doubleAmount, 1);
-			LivesSystem.LockLife();
+			//LivesSystem.LockLife();
 
 			//if (Monetization.Settings.LevelRequire < GetCurrentLevelAbstract.Instance.GetLevel())
 			//{
@@ -201,7 +201,6 @@ namespace Framework
 				FloatingCloud.SpawnCurrency(currentReward.CurrencyType.ToString(), rewardAmountText.rectTransform, coinsPanelUI.Image.rectTransform, 10, "", () =>
 				{
 					CurrencyController.Add(currentReward.CurrencyType, currentReward.Amount * doubleAmount);
-					LivesSystem.LockLife();
 					GameController.Unload((b) =>
 					{
 						//if (b)

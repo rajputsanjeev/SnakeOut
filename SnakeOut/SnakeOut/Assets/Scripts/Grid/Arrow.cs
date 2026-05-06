@@ -154,6 +154,7 @@ namespace ArrowOut
 				SetColor(invalidColor);
 				DOVirtual.DelayedCall(0.5f, () =>
 				{
+					isExtending = false;
 					SetColor(currentThemeColor);
 				});
 				AudioController.PlaySound(AudioController.AudioClips.actionError, 0.5f);

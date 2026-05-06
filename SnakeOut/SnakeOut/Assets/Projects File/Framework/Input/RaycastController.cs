@@ -85,7 +85,7 @@ namespace Watermelon
 					}
 				}
 			}
-			else if (InputController.ClickAction.WasReleasedThisFrame() && LevelController._currentSelectedArrow != null)
+			else if (InputController.ClickAction.WasReleasedThisFrame())
 			{
 				// Only fire OnObjectReleased if the pointer hasn't moved significantly
 				// since the press — i.e. this is a tap, not a pan/drag gesture.
@@ -93,6 +93,10 @@ namespace Watermelon
 				if (dragDistance <= DRAG_THRESHOLD_PX)
 				{
 					LevelController.OnObjectReleased();
+				}
+				else
+				{
+					LevelController.OnArrowRemoved();
 				}
 			}
 		}

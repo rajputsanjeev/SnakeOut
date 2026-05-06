@@ -10,11 +10,13 @@ namespace ArrowOut
 	{
 		private readonly GameRenderMode renderMode;
 		private readonly Camera mainCamera;
+		private readonly float spacing;
 
-		public CoordinateConverter(GameRenderMode mode, Camera camera)
+		public CoordinateConverter(GameRenderMode mode, Camera camera, float spacing = 1f)
 		{
 			renderMode = mode;
 			mainCamera = camera;
+			this.spacing = spacing;
 		}
 
 		public Vector3 GridToWorld(Vector2Int gridPosition)
@@ -23,9 +25,9 @@ namespace ArrowOut
 			{
 				case GameRenderMode.Mesh3D:
 				case GameRenderMode.LineRenderer3D:
-					return new Vector3(gridPosition.x, 0, gridPosition.y);
+					return new Vector3(gridPosition.x * spacing, 0, gridPosition.y * spacing);
 				default:
-					return new Vector3(gridPosition.x, gridPosition.y, 0);
+					return new Vector3(gridPosition.x * spacing, gridPosition.y * spacing, 0);
 			}
 		}
 
@@ -36,13 +38,13 @@ namespace ArrowOut
 				case GameRenderMode.Mesh3D:
 				case GameRenderMode.LineRenderer3D:
 					return new Vector2Int(
-						Mathf.RoundToInt(worldPosition.x),
-						Mathf.RoundToInt(worldPosition.z)
+						Mathf.RoundToInt(worldPosition.x / spacing),
+						Mathf.RoundToInt(worldPosition.z / spacing)
 					);
 				default:
 					return new Vector2Int(
-						Mathf.RoundToInt(worldPosition.x),
-						Mathf.RoundToInt(worldPosition.y)
+						Mathf.RoundToInt(worldPosition.x / spacing),
+						Mathf.RoundToInt(worldPosition.y / spacing)
 					);
 			}
 		}

@@ -41,6 +41,8 @@ namespace ArrowOut
 				case GameRenderMode.Mesh3D:
 				case GameRenderMode.LineRenderer3D:
 					MeshArrowHead meshHead = headObj.AddComponent<MeshArrowHead>();
+					var colliderClick3D = headObj.AddComponent<ColliderClickForwarder>();
+					colliderClick3D.Initialize(clickableObjectRenderer);
 					meshHead.Initialize(position, parent, rotationOffset);
 					meshHead.Setup(GridManager.Instance.snakeHeadPrefab);
 					head = meshHead;
@@ -96,9 +98,9 @@ namespace ArrowOut
 		/// <summary>
 		/// Creates coordinate converter
 		/// </summary>
-		public ICoordinateConverter CreateCoordinateConverter(Camera camera)
+		public ICoordinateConverter CreateCoordinateConverter(Camera camera, float spacing = 1f)
 		{
-			return new CoordinateConverter(renderMode, camera);
+			return new CoordinateConverter(renderMode, camera, spacing);
 		}
 	}
 }

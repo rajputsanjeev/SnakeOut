@@ -19,6 +19,7 @@ public class LevelEditor : EditorWindow
 	// ================= GRID =================
 	int width = 8;
 	int height = 8;
+	float spacing = 1f;
 	float timeLimit = 60f;
 	float currentCellSize = BASE_CELL_SIZE;
 
@@ -312,6 +313,7 @@ public class LevelEditor : EditorWindow
 	{
 		width = level.width;
 		height = level.height;
+		spacing = level.spacing;
 		timeLimit = level.Duration;
 
 		arrows.Clear();
@@ -384,6 +386,7 @@ public class LevelEditor : EditorWindow
 		selectedArrow = null;
 		width = 8;
 		height = 8;
+		spacing = 1f;
 		timeLimit = 60f;
 		CalculateCellSize();
 		Repaint();
@@ -397,6 +400,7 @@ public class LevelEditor : EditorWindow
 
 		selectedLevel.width = width;
 		selectedLevel.height = height;
+		selectedLevel.spacing = spacing;
 		selectedLevel.Duration = timeLimit;
 
 		selectedLevel.arrowPaths = new List<ArrowPath>(arrows.Values);
@@ -424,6 +428,33 @@ public class LevelEditor : EditorWindow
 		Repaint();
 	}
 
+		void ApplyPaletteToAllLevels()
+	{
+		if (colorPalette == null || colorPalette.Count == 0) return;
+		if (database == null || database.levels == null) return;
+
+		foreach (var level in database.levels)
+		{
+			if (level == null || level.arrowPaths == null) continue;
+
+			int i = 0;
+			foreach (var arrow in level.arrowPaths)
+			{
+				arrow.texture = colorPalette[i % colorPalette.Count].texture;
+				i++;
+			}
+			EditorUtility.SetDirty(level);
+		}
+
+		AssetDatabase.SaveAssets();
+
+		if (selectedLevel != null)
+		{
+			LoadLevelData(selectedLevel);
+		}
+
+		Repaint();
+	}
 	// ================= AUTO-SCALING =================
 	void CalculateCellSize()
 	{
@@ -857,14 +888,16 @@ public class LevelEditor : EditorWindow
 		        GUILayout.Label("Grid Settings", EditorStyles.boldLabel);
 
         EditorGUI.BeginChangeCheck();
-		        int newWidth = EditorGUILayout.IntField("Width", width);
+		int newWidth = EditorGUILayout.IntField("Width", width);
         int newHeight = EditorGUILayout.IntField("Height", height);
+        float newSpacing = EditorGUILayout.FloatField("Spacing", spacing);
         timeLimit = EditorGUILayout.FloatField("Time Limit", timeLimit);
 
         if (EditorGUI.EndChangeCheck() && selectedLevel != null)
         {
 			width = newWidth;
 			height = newHeight;
+			spacing = newSpacing;
 			CalculateCellSize();
 			SaveCurrentLevel();
 		}
@@ -898,6 +931,17 @@ public class LevelEditor : EditorWindow
 		{
 			ApplyPaletteToArrows();
 		}
+
+		GUI.enabled = colorPalette.Count > 0 && database != null;
+		if (GUILayout.Button("Apply to All Levels", GUILayout.Height(20)))
+		{
+			if (EditorUtility.DisplayDialog("Apply Palette to All Levels",
+				"Are you sure you want to overwrite arrow colors in all levels with this palette?", "Yes", "Cancel"))
+			{
+				ApplyPaletteToAllLevels();
+			}
+		}
+
 		GUI.enabled = selectedLevel != null;
 		GUILayout.EndHorizontal();
 

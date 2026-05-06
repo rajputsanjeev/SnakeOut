@@ -44,51 +44,23 @@ namespace Framework
 		public void ExitPopCloseButton()
 		{
 			AudioController.PlaySound(AudioController.AudioClips.buttonSound);
-
-			//UIController.HidePage<UILevelQuitPopUpGameOver>();
-
-			//pageClosed?.Invoke(false);
-			//pageClosed = null;
-
-			LivesSystem.LockLife();
-			UILevelQuitPopUp.Show((confirmed) =>
-			{
-				if (confirmed)
-				{
-					LoadMenuCutLIfe();
-				}
-				else
-				{
-					UIPanelManager.Instance.Show(Panel.SETTING_SCREEN, true);
-				}
-			});
-		}
-
-		private void LoadMenuCutLIfe()
-		{
-			DG.Tweening.DOTween.KillAll();
-
-			// Show fullscreen black overlay
-			LivesSystem.UnlockLife(true);
-
-			// Save the current state of the game
-			SaveController.Save(true);
-
-			// Unload the current level and all the dependencies
-			GameController.LoadMenu();
+			UIController.HidePage<UILevelQuitPopUpGameOver>();
+			pageClosed?.Invoke(false);
+			pageClosed = null;
+			replayPressed = null;
 		}
 
 		public void ReplayGame()
 		{
 			AudioController.PlaySound(AudioController.AudioClips.buttonSound);
 			replayPressed?.Invoke(true);
-			GameController.Replay();
 			pageClosed = null;
+			replayPressed = null;
 		}
 
 		public static void Show(SimpleBoolCallback onPageClosed = null, SimpleBoolCallback onReplayButtonClicked = null, bool isGameOverScreen = false)
 		{
-			if (!LivesSystem.IsLocked || LivesSystem.InfiniteMode)
+			if (LivesSystem.IsLocked || LivesSystem.InfiniteMode)
 			{
 				onPageClosed?.Invoke(true);
 				return;

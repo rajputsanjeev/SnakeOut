@@ -43,13 +43,14 @@ namespace ArrowOut
 			// AddComponent<TubeGenerator>() triggers Unity's [RequireComponent] resolution,
 			// which auto-adds MeshFilter + MeshRenderer. Do NOT add them manually first.
 			splineComputer = gameObject.AddComponent<SplineComputer>();
-			splineComputer.type = Spline.Type.CatmullRom;
+			splineComputer.type = Spline.Type.BSpline;
 			splineComputer.space = SplineComputer.Space.World;
+			splineComputer.sampleMode = SplineComputer.SampleMode.Uniform;
 
 			tubeGenerator = gameObject.AddComponent<TubeGenerator>();
 			tubeGenerator.spline = splineComputer;  // subscribe TubeGenerator to the computer
 			tubeGenerator.sides = 12;
-			tubeGenerator.size = 0.60f;          // diameter = 2 × 0.15f radius
+			tubeGenerator.size = 0.8f;          // diameter = 2 × 0.15f radius
 			tubeGenerator.capMode = TubeGenerator.CapMethod.Round;
 			tubeGenerator.roundCapLatitude = 3;              // 8 latitude rings → smooth hemisphere at each end
 			tubeGenerator.uvMode = MeshGenerator.UVMode.UniformClamp;

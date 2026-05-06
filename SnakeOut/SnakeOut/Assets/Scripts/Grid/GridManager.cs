@@ -119,7 +119,6 @@ namespace ArrowOut
 		private void InitializeFactories()
 		{
 			arrowFactory = new ArrowFactory(renderMode, this);
-			coordinateConverter = arrowFactory.CreateCoordinateConverter(mainCamera);
 			movementValidator = arrowFactory.CreateMovementValidator();
 		}
 
@@ -134,6 +133,8 @@ namespace ArrowOut
 			totalArrows = CurrentLevel.arrowPaths.Count;
 			completedArrows = 0;
 			timer = CurrentLevel.Duration;
+
+			coordinateConverter = arrowFactory.CreateCoordinateConverter(mainCamera, CurrentLevel.spacing);
 
 			ClearGrid();
 
@@ -180,8 +181,8 @@ namespace ArrowOut
 
 		private Vector3 GetGridCenter()
 		{
-			float centerX = (CurrentLevel.width - 1) * 0.5f;
-			float centerY = (CurrentLevel.height - 1) * 0.5f;
+			float centerX = (CurrentLevel.width - 1) * CurrentLevel.spacing * 0.5f;
+			float centerY = (CurrentLevel.height - 1) * CurrentLevel.spacing * 0.5f;
 
 			if (renderMode == GameRenderMode.Mesh3D || renderMode == GameRenderMode.LineRenderer3D)
 				return new Vector3(centerX, 0, centerY);
@@ -204,8 +205,8 @@ namespace ArrowOut
 				mainCamera.transform.rotation = Quaternion.identity;
 			}
 
-			float gridWidth = CurrentLevel.width + cameraPadding;
-			float gridHeight = CurrentLevel.height + cameraPadding;
+			float gridWidth = (CurrentLevel.width * CurrentLevel.spacing) + cameraPadding;
+			float gridHeight = (CurrentLevel.height * CurrentLevel.spacing) + cameraPadding;
 			float screenRatio = (float)Screen.width / Screen.height;
 			float targetRatio = gridWidth / gridHeight;
 
@@ -220,7 +221,8 @@ namespace ArrowOut
 			mainCamera.orthographic = false;
 			mainCamera.fieldOfView = 60f;
 
-			float distance = Mathf.Max(CurrentLevel.width, CurrentLevel.height) * 0.7f + 10f;
+			float maxDim = Mathf.Max(CurrentLevel.width, CurrentLevel.height) * CurrentLevel.spacing;
+			float distance = maxDim * 0.7f + 10f;
 			Vector3 offset = Quaternion.Euler(30, 45, 0) * (Vector3.back * distance);
 			mainCamera.transform.position = gridCenter + offset;
 			mainCamera.transform.LookAt(gridCenter);
