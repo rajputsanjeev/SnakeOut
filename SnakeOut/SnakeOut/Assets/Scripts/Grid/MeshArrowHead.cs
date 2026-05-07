@@ -25,6 +25,7 @@ namespace ArrowOut
 			{
 				var instance = Instantiate(headPrefab, transform);
 				instance.transform.localPosition = Vector3.zero;
+				instance.transform.localScale = Vector3.one * 1.5f;
 
 				var head = instance.GetComponent<GeckoHead>();
 				var arrowComp = _parent.GetComponent<Arrow>();
